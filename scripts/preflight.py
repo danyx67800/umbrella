@@ -76,8 +76,10 @@ def check_gh_auth() -> Check:
         [path, "auth", "status"], capture_output=True, text=True,
         timeout=30, check=False)
     ok = result.returncode == 0
+    # Non bloccante per la build: serve solo alle operazioni di release, che
+    # verificano l'autenticazione nel proprio script.
     detail = "autenticato" if ok else "non autenticato (gh auth login)"
-    return Check("gh auth", ok, ok is False, detail)
+    return Check("gh auth", ok, False, detail)
 
 
 def check_disk() -> Check:
