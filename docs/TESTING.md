@@ -19,6 +19,7 @@ Chromium **non presente** (manca la toolchain C++).
 | `npx tsc --noEmit --strict app.ts` | Eseguito: **0 errori** |
 | GitHub Actions CI (windows-latest) | **Verde** (test, compileall, JSON, preflight) |
 | `python scripts/gen_patches.py --check` | Non eseguito (serve il checkout git) |
+| Workflow `Build Windows (self-hosted)` | Non eseguito: nessun runner registrato |
 | Build Chromium / build Umbrella | **Non eseguita**: VS 2022, SDK e depot_tools assenti |
 | Avvio del browser, navigazione, UI | **Non eseguiti** |
 

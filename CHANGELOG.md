@@ -17,6 +17,8 @@ Formato basato su Keep a Changelog. Il progetto segue SemVer.
 - Tooling: preflight ambiente, fetch Chromium pinnato, overlay sync,
   integrazione/check/revert, build GN+Ninja, packaging, release.
 - Test eseguibili senza Chromium e CI Windows leggera.
+- Workflow `Build Windows (self-hosted)` per compilare su hardware adeguato,
+  con verifica anchor, packaging e artefatto non firmato.
 
 ### Known limitations
 

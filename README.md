@@ -9,6 +9,7 @@ WebUI di Chromium.
 - **Chromium:** 158.0.8127.37 — commit `b8c2be851f62f6a394ec57955d7f31335d7cb6d4`
 - **Canale upstream:** Stable (17 novembre 2026)
 - **Piattaforma:** Windows 10/11 x64
+- **Repository:** https://github.com/danyx67800/umbrella
 
 Stato upstream e pin sono in [`versions.json`](versions.json).
 
@@ -30,6 +31,7 @@ upstream del tag pinnato.
 | Nuova scheda WebUI `chrome://umbrella/` | Scritta, **non compilata né eseguita** |
 | Motore di integrazione con anchor verificati | Fatto e testato |
 | CI Windows (test, JSON, preflight) | Verde |
+| Workflow build self-hosted | Pronto, in attesa di un runner registrato |
 | Build Chromium su Windows | **Bloccata**: toolchain C++ assente |
 | Toolbar/sidebar native Views, temi nativi, installer | **Non ancora implementati** (Fase 3+) |
 

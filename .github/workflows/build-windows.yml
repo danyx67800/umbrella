@@ -1,0 +1,95 @@
+name: Build Windows (self-hosted)
+
+# Solo avvio manuale: un workflow self-hosted raggiungibile da pull request
+# sarebbe un rischio di sicurezza. Serve accesso in scrittura al repository.
+on:
+  workflow_dispatch:
+    inputs:
+      configuration:
+        description: "Configurazione di build"
+        type: choice
+        options: [release, debug]
+        default: release
+      target:
+        description: "Target Ninja"
+        type: string
+        default: chrome
+
+permissions:
+  contents: read
+
+concurrency:
+  group: umbrella-windows-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Chromium ${{ inputs.configuration }}
+    # Il runner deve avere Visual Studio 2022, Windows SDK, depot_tools,
+    # Python 3.11+ e almeno 120 GB liberi. Vedi docs/BUILD.md.
+    runs-on: [self-hosted, windows, x64, umbrella-build]
+    timeout-minutes: 600
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Aggiungi depot_tools al PATH
+        shell: pwsh
+        run: |
+          if (Test-Path "C:\depot_tools") {
+            "C:\depot_tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+
+      - name: Preflight toolchain
+        run: python scripts/preflight.py
+
+      - name: Ripristina integrazione precedente
+        run: python scripts/integrate.py --revert
+
+      - name: Checkout Chromium pinnato
+        run: python scripts/fetch_chromium.py
+
+      - name: Installa overlay
+        run: python scripts/link_overlay.py
+
+      - name: Verifica anchor upstream
+        run: python scripts/integrate.py --check
+
+      - name: Applica integrazione
+        run: python scripts/integrate.py --apply
+
+      - name: Build
+        shell: pwsh
+        run: |
+          if ("${{ inputs.configuration }}" -eq "debug") {
+            python scripts/build.py --debug --target "${{ inputs.target }}"
+          } else {
+            python scripts/build.py --release --target "${{ inputs.target }}"
+          }
+
+      - name: Prepara pacchetto
+        if: inputs.configuration == 'release'
+        shell: pwsh
+        run: ./scripts/package.ps1
+
+      - name: Carica artefatto
+        if: inputs.configuration == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbrella-win64
+          path: dist/Umbrella-*-win64.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Riepilogo
+        shell: pwsh
+        run: |
+          "### Umbrella build" >> $env:GITHUB_STEP_SUMMARY
+          "Configurazione: ${{ inputs.configuration }}" >> $env:GITHUB_STEP_SUMMARY
+          if (Test-Path "chromium/src/out/Umbrella/chrome.exe") {
+            $exe = Get-Item "chromium/src/out/Umbrella/chrome.exe"
+            "Eseguibile: $($exe.FullName) ($([math]::Round($exe.Length/1MB, 1)) MB)" >> $env:GITHUB_STEP_SUMMARY
+          }
+          Get-ChildItem dist -Filter *.zip -ErrorAction SilentlyContinue | ForEach-Object {
+            "Archivio: $($_.Name) ($([math]::Round($_.Length/1MB)) MB)" >> $env:GITHUB_STEP_SUMMARY
+          }

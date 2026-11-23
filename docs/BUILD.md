@@ -152,7 +152,54 @@ pacchetto su macchina pulita è obbligatoria prima di qualunque release.
 
 ## CI
 
-GitHub Actions **non compila Chromium**: i runner standard non hanno spazio né
-toolchain adeguati. La CI esegue test Python, validazione JSON, coerenza pin e
-controllo degli asset. La build avviene su macchina Windows dedicata o
-self-hosted runner, con artefatti caricati solo dopo verifica.
+La CI standard esegue test Python, validazione JSON, coerenza pin e controllo
+degli asset.
+
+### Perché i runner GitHub-hosted non possono compilare Chromium
+
+| Risorsa | Runner standard | Requisito Chromium |
+|---|---|---|
+| vCPU | 4 | 8–16 consigliati |
+| RAM | 16 GB | 16–32 GB |
+| Disco | **14 GB** | **120–150 GB** |
+| Durata job | 6 h | 1–3 h su 8–16 core |
+
+Il disco da 14 GB rende la build impossibile prima ancora del tempo. I
+[larger runner](https://docs.github.com/en/actions/reference/runners/larger-runners)
+con 150–600 GB esistono, ma **solo per organizzazioni Team/Enterprise**; non
+sono disponibili su un account personale. Questa macchina ha 6 core/12 thread,
+31 GB di RAM e 328 GB liberi: è adatta come runner self-hosted.
+
+### Workflow self-hosted
+
+`.github/workflows/build-windows.yml` è avviabile manualmente e richiede un
+runner con label `self-hosted`, `windows`, `x64`, `umbrella-build`.
+
+Preparazione del runner:
+
+1. Installare Visual Studio 2022 Build Tools + Windows SDK e `depot_tools`
+   come descritto sopra, assicurandosi che `gclient`, `gn` e `autoninja` siano
+   nel PATH (il workflow aggiunge `C:\depot_tools` se esiste).
+2. Nelle impostazioni del repository: **Settings → Actions → Runners → New
+   self-hosted runner**, scaricare il runner Windows x64 e configurare:
+
+```powershell
+.\config.cmd --url https://github.com/danyx67800/umbrella `
+  --token <TOKEN> --labels umbrella-build --work C:\umbrella-runner
+.\run.cmd
+```
+
+3. Avviare **Actions → Build Windows (self-hosted) → Run workflow** e
+   scegliere `release` o `debug`.
+
+Il workflow ripristina l'integrazione precedente, sincronizza il commit
+pinnato, reinstalla l'overlay, verifica gli anchor, compila con GN/Ninja e
+carica `dist/Umbrella-<versione>-win64.zip` come artefatto non firmato.
+
+**Sicurezza:** il workflow parte solo con `workflow_dispatch` (richiede
+permessi di scrittura). Non aggiungere trigger `pull_request` o
+`pull_request_target` a un workflow self-hosted: eseguirebbe codice di terzi
+sulla macchina.
+
+La build hosted resta intenzionalmente assente: un workflow che tenta di
+compilare Chromium su 14 GB sprecherebbe solo tempo e minuti.
