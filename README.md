@@ -143,5 +143,6 @@ primo avvio solo se l'utente non ha già scelto un motore diverso.
 
 Il codice Umbrella in questo repository è distribuito con licenza BSD 3-Clause
 ([`LICENSE`](LICENSE)), compatibile con Chromium. Chromium è © The Chromium
-Authors, BSD 3-Clause. Umbrella non è affiliato a Google, Brave, Vivaldi o
-Microsoft e non usa i loro marchi, loghi o interfacce.
+Authors, BSD 3-Clause: attribuzione e note sui marchi in [`NOTICE.md`](NOTICE.md).
+Umbrella non è affiliato a Google, Brave, Vivaldi o Microsoft e non usa i loro
+marchi, loghi o interfacce.
