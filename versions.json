@@ -1,0 +1,25 @@
+{
+  "project": "umbrella",
+  "displayName": "Umbrella",
+  "version": "0.1.0",
+  "channel": "dev",
+  "platforms": ["win-x64"],
+  "chromium": {
+    "milestone": 158,
+    "tag": "158.0.8127.37",
+    "commit": "b8c2be851f62f6a394ec57955d7f31335d7cb6d4",
+    "channel": "stable",
+    "releaseDate": "2026-11-17",
+    "source": "https://chromium.googlesource.com/chromium/src",
+    "depotTools": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+  },
+  "build": {
+    "targetCpu": "x64",
+    "isDebug": false,
+    "isComponentBuild": false,
+    "isOfficialBuild": true,
+    "useRemoteexec": false,
+    "proprietaryCodecs": true,
+    "enableWidevine": true
+  }
+}

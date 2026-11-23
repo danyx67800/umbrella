@@ -1,0 +1,15 @@
+# Copyright 2026 The Umbrella Authors
+# Build Debug Windows x64: component build per link rapidi.
+
+target_cpu = "x64"
+target_os = "win"
+
+is_debug = true
+is_component_build = true
+is_official_build = false
+is_chrome_branded = false
+
+symbol_level = 2
+blink_symbol_level = 2
+
+enable_nacl = false

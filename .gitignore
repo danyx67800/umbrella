@@ -1,0 +1,33 @@
+# Chromium checkout (gestito da depot_tools, non versionato)
+/chromium/
+
+# Build output
+/out/
+/dist/
+/build/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Strumenti locali
+.tmp-upstream/
+.cache/
+.freebuff/
+preflight.json
+.idea/
+.vscode/
+*.log
+
+# Segreti: mai versionati
+.env
+.env.local
+*.pem
+*.pfx
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store

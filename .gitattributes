@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.patch text eol=lf
+*.png binary
+*.ico binary
+*.jpg binary
+*.woff2 binary

@@ -1,0 +1,10 @@
+COMPANY_FULLNAME=The Umbrella Authors
+COMPANY_SHORTNAME=Umbrella
+PRODUCT_FULLNAME=Umbrella
+PRODUCT_SHORTNAME=Umbrella
+PRODUCT_INSTALLER_FULLNAME=Umbrella Installer
+PRODUCT_INSTALLER_SHORTNAME=Umbrella Installer
+COPYRIGHT=Copyright @LASTCHANGE_YEAR@ The Umbrella Authors. All rights reserved.
+MAC_BUNDLE_ID=org.umbrella.Umbrella
+MAC_CREATOR_CODE=Umb1
+MAC_TEAM_ID=

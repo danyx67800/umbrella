@@ -1,0 +1,31 @@
+# Copyright 2026 The Umbrella Authors
+# Build Release Windows x64. Verificare con `gn args out/Umbrella --list`
+# sulla versione Chromium pinnata: i nomi degli argomenti possono cambiare.
+
+target_cpu = "x64"
+target_os = "win"
+
+is_debug = false
+is_component_build = false
+is_official_build = true
+
+# Prodotto non Google-branded: usa le risorse e le stringhe Chromium,
+# personalizzate dal layer Umbrella.
+is_chrome_branded = false
+
+# Nessun PGO precompilato per un fork: la profilazione ufficiale non è
+# applicabile. Ottimizzazioni standard del compilatore restano attive.
+chrome_pgo_phase = 0
+
+# Codec proprietari per la riproduzione multimediale.
+proprietary_codecs = true
+ffmpeg_branding = "Chrome"
+
+# Riduce tempo e spazio della build; i simboli restano sufficienti al
+# debugging dei crash.
+symbol_level = 1
+blink_symbol_level = 0
+v8_symbol_level = 0
+
+# Non usato da Umbrella.
+enable_nacl = false

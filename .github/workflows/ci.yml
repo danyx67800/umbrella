@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feature/**", "fix/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verifiche repository
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Test unitari
+        run: python -m unittest discover -s tests -v
+
+      - name: Compilazione script Python
+        run: python -m compileall -q integration scripts tests
+
+      - name: Validazione JSON
+        shell: pwsh
+        run: |
+          python -m json.tool versions.json | Out-Null
+          python -m json.tool design/tokens.json | Out-Null
+
+      - name: Coerenza ambientale (senza toolchain)
+        run: python scripts/preflight.py --skip-toolchain --json
+
+      - name: Elenco integrazioni
+        run: python scripts/integrate.py --list
+
+  upstream-anchors:
+    name: Anchor upstream (manuale)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Verifica anchor sul tag pinnato
+        run: python scripts/verify_upstream_specs.py --refresh
