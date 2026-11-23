@@ -13,11 +13,13 @@ Chromium **non presente** (manca la toolchain C++).
 
 | Verifica | Esito |
 |---|---|
-| `python -m unittest discover -s tests -v` | Eseguito |
-| `python scripts/integrate.py --check` su fixture del tag 158.0.8127.37 | **21 operazioni, 0 errori** |
+| `python -m unittest discover -s tests -v` | Eseguito: **38 test, 0 fallimenti** |
+| `python scripts/verify_upstream_specs.py` | Eseguito: **21 operazioni, 0 errori** sul tag reale |
 | `python scripts/integrate.py --apply` sulla fixture | Applicato; snippet verificati a mano |
+| `npx tsc --noEmit --strict app.ts` | Eseguito: **0 errori** |
+| GitHub Actions CI (windows-latest) | **Verde** (test, compileall, JSON, preflight) |
 | `python scripts/gen_patches.py --check` | Non eseguito (serve il checkout git) |
-| Build Chromium / build Umbrella | **Non eseguita**: VS 2022, SDK e spazio assenti |
+| Build Chromium / build Umbrella | **Non eseguita**: VS 2022, SDK e depot_tools assenti |
 | Avvio del browser, navigazione, UI | **Non eseguiti** |
 
 La fixture è composta dai file upstream reali scaricati dal tag pinnato

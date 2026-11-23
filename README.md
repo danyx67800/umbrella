@@ -29,6 +29,7 @@ upstream del tag pinnato.
 | Overlay C++ (prefs, features, versione, default search, extra parts) | Scritto, **non compilato** |
 | Nuova scheda WebUI `chrome://umbrella/` | Scritta, **non compilata né eseguita** |
 | Motore di integrazione con anchor verificati | Fatto e testato |
+| CI Windows (test, JSON, preflight) | Verde |
 | Build Chromium su Windows | **Bloccata**: toolchain C++ assente |
 | Toolbar/sidebar native Views, temi nativi, installer | **Non ancora implementati** (Fase 3+) |
 
