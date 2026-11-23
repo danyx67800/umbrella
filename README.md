@@ -31,16 +31,23 @@ upstream del tag pinnato.
 | Nuova scheda WebUI `chrome://umbrella/` | Scritta, **non compilata né eseguita** |
 | Motore di integrazione con anchor verificati | Fatto e testato |
 | CI Windows (test, JSON, preflight) | Verde |
-| Workflow build self-hosted | Pronto, in attesa di un runner registrato |
-| Build Chromium su Windows | **Bloccata**: toolchain C++ assente |
+| Runner self-hosted `umbrella-desktop` | Registrato e **online** (label `umbrella-build`) |
+| Workflow build self-hosted | Pronto, non ancora eseguito |
+| Build Chromium su Windows | **Bloccata**: VS 2026/SDK 28000 non installati (UAC non approvato) |
 | Toolbar/sidebar native Views, temi nativi, installer | **Non ancora implementati** (Fase 3+) |
 
 ### Blocker misurati su questa macchina
 
-- Visual Studio 2022 / MSVC / Windows SDK: **non installati**.
-- `depot_tools`: **non presenti**.
-- Spazio libero su `C:`: **328 GB** — sufficiente per checkout + build.
+- Visual Studio 2026 / Windows SDK 10.0.28000: **non installati**. Lo script
+  `scripts/install_toolchain.ps1` è pronto, ma l'installazione richiede
+  l'approvazione del prompt UAC, scaduta senza avvio.
+- `depot_tools`: presenti in `.depot_tools` (non versionati).
+- Runner GitHub self-hosted: registrato e online.
+- Spazio libero su `C:`: **326 GB** — sufficiente per checkout + build.
 - RAM: **31 GB** — sufficiente.
+
+Il pin Chromium 158 richiede **VS 2026 (>=18.0)** e **SDK 10.0.28000**: VS 2022
+non è più supportato da `build/vs_toolchain.py`.
 
 Il repository è progettato per essere clonato su una macchina Windows con
 toolchain completa: `scripts/preflight.py` blocca la build se i requisiti non

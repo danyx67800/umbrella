@@ -25,20 +25,28 @@ concurrency:
 jobs:
   build:
     name: Chromium ${{ inputs.configuration }}
-    # Il runner deve avere Visual Studio 2022, Windows SDK, depot_tools,
-    # Python 3.11+ e almeno 120 GB liberi. Vedi docs/BUILD.md.
+    # Il runner deve avere Visual Studio 2026 (>=18.0), Windows SDK
+    # 10.0.28000, Python 3.11+ e almeno 120 GB liberi. Vedi docs/BUILD.md.
     runs-on: [self-hosted, windows, x64, umbrella-build]
     timeout-minutes: 600
+    env:
+      # Usa Visual Studio installato localmente invece del toolchain CIPD.
+      DEPOT_TOOLS_WIN_TOOLCHAIN: "0"
 
     steps:
+      # clean: false preserva chromium/ e .cache/ tra una build e l'altra.
       - uses: actions/checkout@v4
+        with:
+          clean: false
 
-      - name: Aggiungi depot_tools al PATH
+      - name: Installa depot_tools nel workspace
         shell: pwsh
         run: |
-          if (Test-Path "C:\depot_tools") {
-            "C:\depot_tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $depot = Join-Path $env:GITHUB_WORKSPACE ".depot_tools"
+          if (-not (Test-Path (Join-Path $depot "gclient.bat"))) {
+            git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git $depot
           }
+          $depot | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Preflight toolchain
         run: python scripts/preflight.py

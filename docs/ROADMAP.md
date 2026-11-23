@@ -26,7 +26,7 @@ sono stati eseguiti e registrati; il codice scritto ma non compilato è
 | Motore check/apply/revert + test | Fatto e testato |
 | Script fetch/sync/overlay/build/package | Fatto, non eseguito |
 | CI leggera | Fatto |
-| Prima build Umbrella | **Bloccata**: manca VS 2022 + Windows SDK + depot_tools |
+| Prima build Umbrella | **Bloccata**: mancano VS 2026 + SDK 10.0.28000; installer pronto, UAC non approvato |
 
 Prossimo passo concreto: installare la toolchain (docs/BUILD.md), eseguire
 `preflight.py` e `fetch_chromium.py`, poi correggere gli eventuali errori di

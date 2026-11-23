@@ -19,8 +19,9 @@ Chromium **non presente** (manca la toolchain C++).
 | `npx tsc --noEmit --strict app.ts` | Eseguito: **0 errori** |
 | GitHub Actions CI (windows-latest) | **Verde** (test, compileall, JSON, preflight) |
 | `python scripts/gen_patches.py --check` | Non eseguito (serve il checkout git) |
-| Workflow `Build Windows (self-hosted)` | Non eseguito: nessun runner registrato |
-| Build Chromium / build Umbrella | **Non eseguita**: VS 2022, SDK e depot_tools assenti |
+| Runner self-hosted `umbrella-desktop` | Registrato e online (label `umbrella-build`) |
+| Workflow `Build Windows (self-hosted)` | **Non eseguito**: preflight fallisce senza VS 2026/SDK 28000 |
+| Build Chromium / build Umbrella | **Non eseguita**: VS 2026 e SDK 10.0.28000 assenti; UAC non approvato |
 | Avvio del browser, navigazione, UI | **Non eseguiti** |
 
 La fixture è composta dai file upstream reali scaricati dal tag pinnato

@@ -94,23 +94,38 @@ def check_disk() -> Check:
 
 
 def check_visual_studio() -> Check:
+    """Chromium 158 richiede Visual Studio 2026 (>=18.0), non VS 2022."""
     vswhere = _program_files_x86() / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
     if not vswhere.is_file():
         return Check("visual studio", False, True,
-                     "vswhere assente: VS 2022 non installato")
+                     "vswhere assente: VS 2026 non installato")
     result = subprocess.run(
-        [str(vswhere), "-latest", "-products", "*", "-requires",
-         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+        [str(vswhere), "-latest", "-products", "*",
+         "-version", "[18.0,19.0)", "-requires",
+         "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
+         "-property", "installationVersion"],
+        capture_output=True, text=True, timeout=30, check=False)
+    version = result.stdout.strip().splitlines()
+    if not version:
+        return Check("visual studio", False, True,
+                     "VS 2026 (>=18.0) con Desktop C++ non trovato")
+
+    paths = subprocess.run(
+        [str(vswhere), "-latest", "-products", "*",
+         "-version", "[18.0,19.0)", "-requires",
+         "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
          "-property", "installationPath"],
         capture_output=True, text=True, timeout=30, check=False)
-    path = result.stdout.strip()
+    path = paths.stdout.strip().splitlines()
     if not path:
         return Check("visual studio", False, True,
-                     "toolset C++ x64/x86 non trovato")
-    return Check("visual studio", True, False, path.splitlines()[0])
+                     "percorso di VS 2026 non rilevato")
+    return Check("visual studio", True, False,
+                 f"VS {version[0]} — {path[0]}")
 
 
 def check_windows_sdk() -> Check:
+    """Il pin richiede SDK 10.0.28000; il solo 26100 non basta."""
     sdk = _program_files_x86() / "Windows Kits" / "10" / "Include"
     if not sdk.is_dir():
         return Check("windows sdk", False, True, "Windows SDK non installato")
@@ -118,7 +133,21 @@ def check_windows_sdk() -> Check:
                       reverse=True)
     if not versions:
         return Check("windows sdk", False, True, "nessuna versione SDK")
-    return Check("windows sdk", True, False, versions[0])
+
+    def key(value: str) -> tuple[int, ...]:
+        parts: list[int] = []
+        for part in value.split("."):
+            if not part.isdigit():
+                break
+            parts.append(int(part))
+        return tuple(parts)
+
+    eligible = [value for value in versions if key(value) >= (10, 0, 28000)]
+    if not eligible:
+        return Check("windows sdk", False, True,
+                     f"serve 10.0.28000+, trovato {versions[0]}")
+    return Check("windows sdk", True, False,
+                 f"{eligible[0]} (richiesto 10.0.28000+)")
 
 
 def check_depot_tools() -> Check:

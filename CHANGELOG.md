@@ -19,12 +19,15 @@ Formato basato su Keep a Changelog. Il progetto segue SemVer.
 - Test eseguibili senza Chromium e CI Windows leggera.
 - Workflow `Build Windows (self-hosted)` per compilare su hardware adeguato,
   con verifica anchor, packaging e artefatto non firmato.
+- `scripts/install_toolchain.ps1`: installazione di VS 2026 Build Tools e
+  Windows SDK 10.0.28000, requisiti reali del pin Chromium 158.
+- Preflight che rifiuta VS 2022 e SDK 26100 invece di fallire a metà build.
 
 ### Known limitations
 
-- Nessuna build Chromium eseguita: toolchain C++ (VS 2022, Windows SDK,
-  depot_tools) assente sulla macchina di sviluppo corrente; disco e RAM sono
-  sufficienti.
+- Nessuna build Chromium eseguita: VS 2026 e Windows SDK 10.0.28000 non sono
+  installati. L'installer è pronto e il runner self-hosted è online, ma il
+  prompt UAC non è stato approvato. Disco e RAM sono sufficienti.
 - Toolbar, sidebar verticale nativa, impostazioni complete, installer e
   aggiornamenti firmati sono pianificati nelle fasi successive (vedi
   `docs/ROADMAP.md`).
